@@ -200,6 +200,19 @@ footer{background:var(--charcoal);padding:72px 80px 36px}
   .footer-top{grid-template-columns:1fr 1fr}
   .cta-band{flex-direction:column;align-items:flex-start;padding:60px 24px}
   .section-header{flex-direction:column;align-items:flex-start;gap:20px}
+}
+
+/* Adaptive nav — flips colors based on section background */
+nav{transition:background 0.35s ease, border-color 0.35s ease}
+nav .logo-brand, nav .nav-links a{transition:color 0.35s ease}
+nav.nav-dark{background:rgba(10,14,21,0.55);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom-color:rgba(255,255,255,0.08)}
+nav.nav-dark .logo-brand{color:var(--white)}
+nav.nav-dark .logo-mark{background:rgba(255,255,255,0.1)}
+nav.nav-dark .nav-links a{color:rgba(255,255,255,0.85)}
+nav.nav-dark .nav-links a:hover{color:var(--blue)}
+nav.nav-dark .nav-cta{background:var(--white);color:var(--black)}
+nav.nav-dark .nav-cta:hover{background:var(--blue);color:var(--black)
+
   .scroll-hint{display:none}
 }
 @media(max-width:560px){
@@ -733,6 +746,36 @@ document.querySelectorAll('.listing-card').forEach((el,i)=>el.style.transitionDe
 document.querySelectorAll('.stat-item').forEach((el,i)=>el.style.transitionDelay=(i*0.1)+'s');
 document.querySelectorAll('.service-card').forEach((el,i)=>el.style.transitionDelay=(i*0.1)+'s');
 document.querySelectorAll('.city-card').forEach((el,i)=>el.style.transitionDelay=(i*0.1)+'s');
+
+/* Adaptive nav — flip colors based on section background */
+(function(){
+  const nav = document.querySelector('nav');
+  if(!nav) return;
+  const sections = [
+    {el:document.querySelector('.hero'),            theme:'dark' },
+    {el:document.querySelector('.stats'),           theme:'light'},
+    {el:document.querySelector('#listings'),        theme:'light'},
+    {el:document.querySelector('.featured-dark'),   theme:'dark' },
+    {el:document.querySelector('.services-section'),theme:'light'},
+    {el:document.querySelector('.cities-section'),  theme:'light'},
+    {el:document.querySelector('.cta-band'),        theme:'dark' },
+    {el:document.querySelector('footer'),           theme:'dark' }
+  ].filter(s=>s.el);
+  const probe = 36 + 36; /* middle of nav = topbar 36px + half nav 36px */
+  function update(){
+    for(const s of sections){
+      const r = s.el.getBoundingClientRect();
+      if(r.top <= probe && r.bottom > probe){
+        nav.classList.toggle('nav-dark', s.theme === 'dark');
+        return;
+      }
+    }
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update, {passive:true});
+  update();
+})();
+
 </script>
 </body>
 </html>
